@@ -10,21 +10,24 @@ package CIS244;
  * @author jalvarez343
  */
 public class SplitFunction {
-    
+
     public static void main(String[] args) {
         String str = "alpha beta game.gone";
-        String [] tokens = str.split(" ");
-    
+        String[] tokens = str.split(" ");
+
         // for enhanced to show tokens
-        for (String token: tokens) {
+        for (String token : tokens) {
             System.out.println(token);
         }
-        
+
         // standard for loop
         // display the array
         for (int i = 0; i < tokens.length; i++) {
             System.out.println(tokens[i]);
         }
+        
+        
+
     }
-    
+
 }
