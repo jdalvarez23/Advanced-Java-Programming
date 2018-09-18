@@ -10,7 +10,6 @@ package CIS244;
  * @author jalvarez343
  */
 public class SplitFunction {
-
     public static void main(String[] args) {
         String str = "alpha beta game.gone";
         String[] tokens = str.split(" ");
@@ -25,9 +24,5 @@ public class SplitFunction {
         for (int i = 0; i < tokens.length; i++) {
             System.out.println(tokens[i]);
         }
-        
-        
-
     }
-
 }
