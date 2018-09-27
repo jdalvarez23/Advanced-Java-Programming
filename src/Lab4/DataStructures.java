@@ -7,6 +7,7 @@ package Lab4;
 
 import java.util.Scanner;
 import java.io.*;
+import java.util.HashMap;
 
 /**
  *
@@ -60,11 +61,14 @@ public class DataStructures {
         file.close(); // close connection to the input file
         outFile.close(); // close connection to the output file
 
-        // declare the file objects
         String line = ""; // initialize variable for file line
         String csv = ","; // initialize and declare variable for split method delimeters
         FileReader fileIn = new FileReader(myFile); // initialize and declare input file object
         BufferedReader br = new BufferedReader(fileIn); // initialize and declare file reader object
+
+        int itemsExceedingCost = 0; // initialize and declare variable for number of items exceeding cost
+        int averageQuantity = 0; // initialize and declare variable for average quantity of items in inventory
+        int category = 0; // initialize and declare variable for number of items in the same category;
 
         try {
             System.out.printf("%n--------------------------------------------------------------%n");
@@ -74,10 +78,34 @@ public class DataStructures {
             // loop that executes when file line exists
             while ((line = br.readLine()) != null) {
                 String[] data = line.split(csv); // initialize and declare array with file data separated at comma
+                
+                // process file data
+                if (Double.parseDouble(data[1]) > 100) {
+                    itemsExceedingCost++; // increment variable counter
+                }
+                
+                averageQuantity += Integer.parseInt(data[2]); // add quantities
+                
+                if (data[3].equals("C")) {
+                    category++; // increment variable counter
+                }
+                
+                
                 System.out.printf("%-15s $%-15s %-15s %-15s\n", data[0], data[1], data[2], data[3]);
                 System.out.printf("--------------------------------------------------------------%n");
             }
             System.out.printf("%n"); // display an empty line
+            System.out.printf("You can query data presented in the inventory table below: %n");
+            System.out.printf("--------------------------------------------------------------%n");
+
+            // obtain user input
+            //System.out.println("Query number of items categorized by same location code. Enter location code: ");
+            //chrLocation = scan.next().charAt(0);
+            
+            // display information
+            System.out.printf("%nQuery number of items with location code C: %d", category);
+            System.out.printf("%nQuery number of items that cost over $100: %d", itemsExceedingCost);
+            System.out.printf("%nQuery average quantity on hand in the inventory: %d%n", averageQuantity / intQuantity);
 
         } catch (IOException e) {
             e.printStackTrace();
