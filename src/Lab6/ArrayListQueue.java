@@ -139,7 +139,7 @@ public class ArrayListQueue {
         String myDateFormat = "MM/dd/yyyy"; // initialize and declare date format string variable
         SimpleDateFormat dtToday = new SimpleDateFormat(myDateFormat); // initialize and declare formatted date object
         JFrame frame = new JFrame("JOptionPane showMessageDialog example"); // initialize and declare JFrame object
-        String titleMessage = "Client Information Folders - " + dtToday.format(myDate); // initialize titleMessage for prompt box
+        String titleMessage = "ADT Client Queue - " + dtToday.format(myDate); // initialize titleMessage for prompt box
         int selectedOption = 1; // initialize and declare selectedOption variable
 
         // execute if queue is not empty
