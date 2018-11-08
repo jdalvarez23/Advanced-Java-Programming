@@ -1,4 +1,4 @@
-package tickets;
+package Test;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
