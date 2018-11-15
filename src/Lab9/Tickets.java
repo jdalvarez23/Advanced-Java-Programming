@@ -1,4 +1,4 @@
-package tickets;
+package Lab9;
 
 import java.awt.Color;
 import java.awt.event.ActionEvent;

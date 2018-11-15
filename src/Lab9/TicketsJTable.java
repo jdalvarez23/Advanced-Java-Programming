@@ -1,4 +1,4 @@
-package tickets;
+package Lab9;
 
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
