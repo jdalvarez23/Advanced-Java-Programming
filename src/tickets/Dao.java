@@ -1,4 +1,4 @@
-package Test;
+package tickets;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -15,8 +15,7 @@ public class Dao {
 		// Setup the connection with the DB
 		try {
 			connect = DriverManager
-					.getConnection("jdbc:mysql://www.papademas.net:3307/wcc?autoReconnect=true&useSSL=false"
-							+ "&user=userdb&password=pass");
+					.getConnection("");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -26,7 +25,7 @@ public class Dao {
 
 	public void createTable() {
 		// variables for SQL Query table creations
-		final String createTicketsTable = "CREATE TABLE jpapa_tickets(ticket_id INT AUTO_INCREMENT PRIMARY KEY, "
+		final String createTicketsTable = "CREATE TABLE jalva_tickets(ticket_id INT AUTO_INCREMENT PRIMARY KEY, "
                                                 + "ticket_issuer VARCHAR(30), ticket_description VARCHAR(200))";
 	 
 		try {

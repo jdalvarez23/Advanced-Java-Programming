@@ -1,4 +1,4 @@
-package Test;
+package tickets;
 
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
