@@ -165,6 +165,8 @@ public class RadioGroup extends JFrame {
             String msg1 = "Oops! You have fallen into the clutches of Baron Evil ...";
             String msg2 = "Oh no! You have entered the forbidden abyss ...";
             String msg3 = "Good! You are now entering the mysterious Room B ...";
+            String msg4 = "Text goes here";
+            String msg5 = "Text goes here too";
 
             String buttonPressed = e.getActionCommand();
 
@@ -186,6 +188,14 @@ public class RadioGroup extends JFrame {
                     JOptionPane.showMessageDialog(RadioGroup.this,
                             msg1 + " Game over!");
 
+                } else if (door == "3") {
+                    JOptionPane.showMessageDialog(RadioGroup.this,
+                            msg4 + " Game over!");
+                } else if (door == "4") {
+                    
+                } else if (door == "5") {
+                    JOptionPane.showMessageDialog(RadioGroup.this,
+                            msg5 + " Game over!");
                 } else if (door == "6") {
                     JOptionPane.showMessageDialog(RadioGroup.this,
                             msg2 + " Game over!");
