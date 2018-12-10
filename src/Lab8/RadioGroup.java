@@ -162,13 +162,15 @@ public class RadioGroup extends JFrame {
 
         public void actionPerformed(ActionEvent e) {
 
+            // initalize and declare predefined game messages
             String msg1 = "Oops! You have fallen into the clutches of Baron Evil ...";
             String msg2 = "Oh no! You have entered the forbidden abyss ...";
             String msg3 = "Good! You are now entering the mysterious Room B ...";
-            String msg4 = "Text goes here";
-            String msg5 = "Text goes here too";
+            String msg5 = "Excellent! You have successfully passed your training.";
 
-            String buttonPressed = e.getActionCommand();
+            String buttonPressed = e.getActionCommand(); // initialize and set variable value to recently pressed button
+
+            String door; // initialize door variable
 
             System.out.println(buttonPressed);
 
@@ -178,37 +180,50 @@ public class RadioGroup extends JFrame {
                 new RadioGroup(2); // call method that creates and displays the radio group dialog GUI 
                 // execute if room A button is pressed
             } else if (buttonPressed == "Open Door (Room A)") {
-
-                String door = group.getSelection().getActionCommand(); // initialize and set variable value to selected radio button
+                door = group.getSelection().getActionCommand(); // initialize and set variable value to selected radio button
 
                 JOptionPane.showMessageDialog(RadioGroup.this,
-                        "You are now opening door " + door + " ...");
+                        "You are now opening door " + door + " ..."); // display dialog message
 
+                // execute if door selected is door 2
                 if (door == "2") {
                     JOptionPane.showMessageDialog(RadioGroup.this,
-                            msg1 + " Game over!");
-
-                } else if (door == "3") {
-                    JOptionPane.showMessageDialog(RadioGroup.this,
-                            msg4 + " Game over!");
-                } else if (door == "4") {
-                    
-                } else if (door == "5") {
-                    JOptionPane.showMessageDialog(RadioGroup.this,
-                            msg5 + " Game over!");
+                            msg1 + " Game over!"); // display dialog with custom message
+                    // execute if door selected is door 6
                 } else if (door == "6") {
                     JOptionPane.showMessageDialog(RadioGroup.this,
-                            msg2 + " Game over!");
-
+                            msg2 + " Game over!"); // display dialog with custom message
+                    // execute if door selected is door 7
                 } else if (door == "7") {
                     JOptionPane.showMessageDialog(RadioGroup.this,
-                            msg3 + " Be cautious!");
-                    closeAllDialogs();
+                            msg3 + " Be cautious!"); // display dialog with custom message
+                    closeAllDialogs(); // call method that closes all dialogs
                     new RadioGroup(3); // call method that creates and displays the radio group dialog GUI 
-                    //show or go to panel B
+                    // execute if no door was selected
                 } else {
                     JOptionPane.showMessageDialog(RadioGroup.this,
-                            "Select a door!");
+                            "Select a door!"); // display dialog message
+                }
+                // execute if room B button is pressed
+            } else if (buttonPressed == "Open Door (Room B)") {
+                door = group.getSelection().getActionCommand(); // initialize and set variable value to selected radio button
+
+                JOptionPane.showMessageDialog(RadioGroup.this,
+                        "You are now opening door " + door + " ..."); // display dialog message
+
+                // execute if door selected is door 3
+                if (door == "3") {
+                    JOptionPane.showMessageDialog(RadioGroup.this,
+                            msg2 + " Game over!"); // display dialog with custom message
+                    // execute if door selected is door 4
+                } else if (door == "4") {
+                    JOptionPane.showMessageDialog(RadioGroup.this,
+                            msg5); // display dialog with custom message
+                    closeAllDialogs(); // call method that closes all dialogs
+                    // execute if door selected is door 5
+                } else if (door == "5") {
+                    JOptionPane.showMessageDialog(RadioGroup.this,
+                            msg1 + " Game over!"); // display dialog with custom message
                 }
             }
         }
