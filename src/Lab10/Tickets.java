@@ -12,6 +12,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import javax.swing.BoxLayout;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -218,7 +219,7 @@ public class Tickets implements ActionListener {
                             String retrievedTicketID = jt.getModel().getValueAt(rowSelected, 0).toString();
                             String retrievedTicketName = jt.getModel().getValueAt(rowSelected, 1).toString();
                             String retrievedTicketDescription = jt.getModel().getValueAt(rowSelected, 2).toString();
-                            
+
                             JFrame frame = new JFrame("JOptionPane showMessageDialog example"); // initialize and declare JFrame object
 
                             JOptionPane.showMessageDialog(frame, "Ticket ID: " + retrievedTicketID + "\nTicket Name: " + retrievedTicketName + "\nTicket Description: " + retrievedTicketDescription + " \n", "Ticket Information - ID #" + retrievedTicketID, JOptionPane.INFORMATION_MESSAGE); // display information in a message box
@@ -241,11 +242,44 @@ public class Tickets implements ActionListener {
 
             try {
                 
+                // initialize variables
+                String ticketSelected;
+                String optionSelected;
+                
                 // retrieve tickets from database
                 Statement statement = dao.getConnection().createStatement();
                 ResultSet results = statement.executeQuery("SELECT * FROM jalva_tickets");
+
+                // create dropdown selector
+                JComboBox<String> ticketDropdownSelector = new JComboBox<String>();
+                JComboBox<String> updateSelector = new JComboBox<String>();
                 
+                updateSelector.addItem("Update ticket issuer name");
+                updateSelector.addItem("Update ticket description");
                 
+                // create panel to place dropdown selector
+                JPanel panel = new JPanel();
+
+                // add retrieved tickets to dropdown selector
+                while (results.next()) {
+                    int ticketID = results.getInt("ticket_id"); // retrieve ticket ID from sql results
+                    String ticketName = results.getString("ticket_issuer"); // retrieve ticket name from sql results
+                    String ticketDescription = results.getString("ticket_description"); // retrieve ticket description from sql results
+
+                    ticketDropdownSelector.addItem("#" + Integer.toString(ticketID) + " - " + ticketName + " - " + ticketDescription);
+                }
+                
+                // add elements to JPanel and mainFrame
+                JLabel message = new JLabel("Please select which ticket you want to update.");
+                JLabel message2 = new JLabel("Please select an action:");
+                panel.add(message);
+                panel.add(ticketDropdownSelector);
+                panel.add(message2);
+                panel.add(updateSelector);
+                mainFrame.getContentPane().removeAll(); // remove all components on the frame before adding JTable
+                mainFrame.add(panel); // add JTable to mainFrame
+                mainFrame.setVisible(true); // displays frame on dialog display
+                statement.close(); // close connection to the database
                 
 
             } catch (SQLException ex) {
