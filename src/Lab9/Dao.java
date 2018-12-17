@@ -15,8 +15,7 @@ public class Dao {
 		// Setup the connection with the DB
 		try {
 			connect = DriverManager
-					.getConnection("jdbc:mysql://www.papademas.net:3307/wcc?autoReconnect=true&useSSL=false"
-							+ "&user=userdb&password=pass");
+					.getConnection("");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
