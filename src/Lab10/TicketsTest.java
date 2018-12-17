@@ -13,7 +13,7 @@ public class TicketsTest {
     // main method begins execution of Java application
     public static void main(String[] args) {
         
-        new Tickets(); // start application
+        new Tickets(true); // start application
         
     }
     

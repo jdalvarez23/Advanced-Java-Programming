@@ -6,12 +6,15 @@ import java.awt.Window;
 import static java.awt.Window.getWindows;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -50,10 +53,10 @@ public class Tickets implements ActionListener {
 
     /* add any more Sub object items below */
     // constructor
-    public Tickets() {
+    public Tickets(boolean isAdmin) {
         dao.createTable();
         createMenu();
-        prepareGUI();
+        prepareGUI(isAdmin);
     }
 
     private void createMenu() {
@@ -92,7 +95,7 @@ public class Tickets implements ActionListener {
         mnuItemDeleteTicket.addActionListener(this);
     }
 
-    private void prepareGUI() {
+    private void prepareGUI(boolean isAdmin) {
         // initialize frame object
         mainFrame = new JFrame("Tickets");
 
@@ -100,7 +103,11 @@ public class Tickets implements ActionListener {
         JMenuBar bar = new JMenuBar();
         bar.add(mnuFile); // add main menu items in order, to JMenuBar
         bar.add(mnuTickets); // add ticket menu items in order, to JMenuBar
-        bar.add(mnuAdmin); // add admin menu items in order, to JMenuBar
+
+        if (isAdmin) {
+            bar.add(mnuAdmin); // add admin menu items in order, to JMenuBar
+        }
+
         // add menu bar components to frame
         mainFrame.setJMenuBar(bar);
 
@@ -151,12 +158,12 @@ public class Tickets implements ActionListener {
             try {
 
                 // get ticket information
-                String ticketName = JOptionPane.showInputDialog(null, "Enter your name");
+                String ticketName = JOptionPane.showInputDialog(null, "Enter your name. (DO NOT USE APOSTROPHES)");
 
                 if (ticketName == null) {
                     System.out.println("No data was inserted!");
                 } else {
-                    String ticketDesc = JOptionPane.showInputDialog(null, "Enter a ticket description");
+                    String ticketDesc = JOptionPane.showInputDialog(null, "Enter a ticket description. (DO NOT USE APOSTROPHES)");
 
                     if (ticketDesc != null) {
                         // insert ticket information to database
@@ -179,6 +186,7 @@ public class Tickets implements ActionListener {
                         if (result != 0) {
                             System.out.println("Ticket ID : " + id + " created successfully!!!");
                             JOptionPane.showMessageDialog(null, "Ticket id: " + id + " created");
+                            mnuItemViewTicket.doClick(); // refreshes frame to view tickets 
                         } else {
                             System.out.println("Ticket cannot be created!!!");
                         }
@@ -241,11 +249,7 @@ public class Tickets implements ActionListener {
         } else if (e.getSource() == mnuItemUpdateTicket) {
 
             try {
-                
-                // initialize variables
-                String ticketSelected;
-                String optionSelected;
-                
+
                 // retrieve tickets from database
                 Statement statement = dao.getConnection().createStatement();
                 ResultSet results = statement.executeQuery("SELECT * FROM jalva_tickets");
@@ -253,10 +257,10 @@ public class Tickets implements ActionListener {
                 // create dropdown selector
                 JComboBox<String> ticketDropdownSelector = new JComboBox<String>();
                 JComboBox<String> updateSelector = new JComboBox<String>();
-                
-                updateSelector.addItem("Update ticket issuer name");
-                updateSelector.addItem("Update ticket description");
-                
+
+                updateSelector.addItem("1. Update ticket issuer name");
+                updateSelector.addItem("2. Update ticket description");
+
                 // create panel to place dropdown selector
                 JPanel panel = new JPanel();
 
@@ -266,21 +270,136 @@ public class Tickets implements ActionListener {
                     String ticketName = results.getString("ticket_issuer"); // retrieve ticket name from sql results
                     String ticketDescription = results.getString("ticket_description"); // retrieve ticket description from sql results
 
-                    ticketDropdownSelector.addItem("#" + Integer.toString(ticketID) + " - " + ticketName + " - " + ticketDescription);
+                    ticketDropdownSelector.addItem(Integer.toString(ticketID) + ". " + ticketName + " - " + ticketDescription);
                 }
-                
-                // add elements to JPanel and mainFrame
+
+                // initiliaze Java Swing components
                 JLabel message = new JLabel("Please select which ticket you want to update.");
                 JLabel message2 = new JLabel("Please select an action:");
+
+                JPanel buttonPanel = new JPanel();
+                JButton nextButton = new JButton("Update");
+
+                // add event listener to button
+                nextButton.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+
+                        // initialize variables
+                        String ticketSelected = ticketDropdownSelector.getSelectedItem().toString(); // retrieve ticket data from ticket dropdown selector
+                        String optionSelected = updateSelector.getSelectedItem().toString(); // retrieve update data from update dropdown selector
+                        int option = (int) optionSelected.charAt(0) - '0';
+                        String[] ticketData = ticketSelected.split("-"); // split ticketSelected string at - and create array
+                        String ticketNameTemp = ticketData[0].substring(3); // set value to ticket name from first element in ticketData array
+                        String ticketName = ticketNameTemp.substring(0, ticketNameTemp.length() - 1);
+                        String ticketDescription = ticketData[1].substring(1); // set value to ticket description from second element in ticketData array
+                        int ticketID = (int) ticketSelected.charAt(0) - '0'; // set value to ticket ID from ticketSelected
+
+                        // execute when update option selected is 1 (ticket issuer name)
+                        if (option == 1) {
+                            JFrame frame = new JFrame("Update Selection 1"); // initialize and declare JFrame object
+                            String newTicketName = (String) JOptionPane.showInputDialog(frame, "Enter a new name below:", "Update Ticket Issuer", JOptionPane.WARNING_MESSAGE, null, null, ticketName); // display information in input dialog
+
+                            // execute if new ticket name is unique (not equal to the current value and if it is not null)
+                            if ((newTicketName != null) && !newTicketName.equals(ticketName)) {
+                                System.out.println("New name: " + newTicketName + ". Old ticket name: " + ticketName + ".");
+                                dao.update(ticketID, option, newTicketName); // call method that updates information in database
+                                mnuItemViewTicket.doClick(); // refreshes frame to view tickets 
+                            }
+
+                            // execute when update option selected is 2 (ticket description)
+                        } else if (option == 2) {
+                            JFrame frame = new JFrame("Update Selection 1"); // initialize and declare JFrame object
+                            String newTicketDescription = (String) JOptionPane.showInputDialog(frame, "Enter a new description below:", "Update Ticket Description", JOptionPane.WARNING_MESSAGE, null, null, ticketDescription); // display information in input dialog
+
+                            // execute if new ticket description is unique (not equal to the current value and if it is not null)
+                            if ((newTicketDescription != null) && !newTicketDescription.equals(ticketDescription)) {
+                                System.out.println("New description: " + newTicketDescription + ". Old ticket description: " + ticketDescription + ".");
+                                dao.update(ticketID, option, newTicketDescription); // call method that updates information in database
+                                mnuItemViewTicket.doClick(); // refreshes frame to view tickets 
+                            }
+
+                        }
+
+                    }
+                });
+
+                // add elements to JPanel and mainFrame
+                buttonPanel.add(nextButton);
                 panel.add(message);
                 panel.add(ticketDropdownSelector);
                 panel.add(message2);
                 panel.add(updateSelector);
                 mainFrame.getContentPane().removeAll(); // remove all components on the frame before adding JTable
                 mainFrame.add(panel); // add JTable to mainFrame
+                mainFrame.getContentPane().add(buttonPanel, BorderLayout.SOUTH); // add button to mainFrame
                 mainFrame.setVisible(true); // displays frame on dialog display
                 statement.close(); // close connection to the database
-                
+
+            } catch (SQLException ex) {
+                // TODO Auto-generated catch block
+                ex.printStackTrace();
+            }
+
+        } else if (e.getSource() == mnuItemDeleteTicket) {
+
+            try {
+
+                // retrieve tickets from database
+                Statement statement = dao.getConnection().createStatement();
+                ResultSet results = statement.executeQuery("SELECT * FROM jalva_tickets");
+
+                // create dropdown selector
+                JComboBox<String> ticketDropdownSelector = new JComboBox<String>();
+
+                // create panel to place dropdown selector
+                JPanel panel = new JPanel();
+
+                // add retrieved tickets to dropdown selector
+                while (results.next()) {
+                    int ticketID = results.getInt("ticket_id"); // retrieve ticket ID from sql results
+                    String ticketName = results.getString("ticket_issuer"); // retrieve ticket name from sql results
+                    String ticketDescription = results.getString("ticket_description"); // retrieve ticket description from sql results
+
+                    ticketDropdownSelector.addItem(Integer.toString(ticketID) + ". " + ticketName + " - " + ticketDescription);
+                }
+
+                // initiliaze Java Swing components
+                JLabel message = new JLabel("Please select which ticket you want to delete:");
+
+                JPanel buttonPanel = new JPanel();
+                JButton deleteButton = new JButton("Delete");
+
+                // add event listener to button
+                deleteButton.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+
+                        // initialize variables
+                        String ticketSelected = ticketDropdownSelector.getSelectedItem().toString(); // retrieve ticket data from ticket dropdown selector
+                        int ticketID = (int) ticketSelected.charAt(0) - '0'; // set value to ticket ID from ticketSelected                  
+                        JFrame frame = new JFrame("Update Selection 1"); // initialize and declare JFrame object
+
+                        int selectedOption = JOptionPane.showConfirmDialog(frame, "Are you sure you want to DELETE this ticket (ID: " + ticketID + ")?", "Delete Ticket", JOptionPane.YES_NO_OPTION); // display information in a message box
+
+                        // execute if user selects the "yes" option
+                        if (selectedOption == JOptionPane.YES_OPTION) {
+                            System.out.println("Ticket ID to Delete: " + ticketID);
+                            dao.delete(ticketID); // call method to delete ticket from database
+                            mnuItemViewTicket.doClick(); // refreshes frame to view tickets 
+                        }
+
+                    }
+                });
+
+                // add elements to JPanel and mainFrame
+                buttonPanel.add(deleteButton);
+                panel.add(message);
+                panel.add(ticketDropdownSelector);
+                panel.add(buttonPanel);
+                mainFrame.getContentPane().removeAll(); // remove all components on the frame before adding JTable
+                mainFrame.add(panel); // add JTable to mainFrame
+                //mainFrame.getContentPane().add(buttonPanel, BorderLayout.SOUTH); // add button to mainFrame
+                mainFrame.setVisible(true); // displays frame on dialog display
+                statement.close(); // close connection to the database
 
             } catch (SQLException ex) {
                 // TODO Auto-generated catch block
